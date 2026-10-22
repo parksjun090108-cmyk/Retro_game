@@ -4,20 +4,18 @@ import { createSession, endSession, requireAuth, publicPlayer } from '../auth.js
 
 const router = Router();
 
-// 행사 모드: 같은 닉네임으로 다시 참여하면 기존 기록을 이어 쓴다.
+// 행사 참가 등록: 기존 닉네임은 재사용할 수 없다. 재접속은 세션으로 처리한다.
 router.post('/login', async (req, res) => {
   const { nickname } = req.body;
   if (typeof nickname !== 'string' || !nickname.trim() || nickname.trim().length > 12)
     return res.status(400).json({ error: '닉네임은 1~12자로 입력해주세요.' });
 
   const name = nickname.trim();
-  await db.read();
 
   const existing = db.data.players.find((p) => p.nickname === name);
 
   if (existing) {
-    createSession(req, res, existing.id);
-    return res.json({ player: publicPlayer(existing), isNew: false });
+    return res.status(409).json({ error: '이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해주세요.' });
   }
 
   const newPlayer = {
@@ -52,7 +50,6 @@ router.patch('/:id/nickname', requireAuth, async (req, res) => {
   if (typeof nickname !== 'string' || !nickname.trim() || nickname.trim().length > 12)
     return res.status(400).json({ error: '닉네임은 1~12자로 입력해주세요.' });
 
-  await db.read();
   const player = db.data.players.find((p) => p.id === id);
   if (!player)
     return res.status(404).json({ error: '플레이어를 찾을 수 없습니다.' });
@@ -73,7 +70,6 @@ router.patch('/:id/nickname', requireAuth, async (req, res) => {
 // GET /api/players/:id/records — 개인 기록 조회
 router.get('/:id/records', async (req, res) => {
   const id = parseInt(req.params.id);
-  await db.read();
 
   const player = db.data.players.find((p) => p.id === id);
   if (!player)

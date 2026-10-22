@@ -19,7 +19,6 @@ router.post('/', requireAuth, async (req, res) => {
   if (!Number.isSafeInteger(score) || score < 0)
     return res.status(400).json({ error: '유효하지 않은 점수입니다.' });
 
-  await db.read();
 
   const player = db.data.players.find((p) => p.id === player_id);
   if (!player)

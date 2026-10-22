@@ -29,14 +29,19 @@ export function createSession(req, res, playerId) {
   });
 }
 
-export function requireAuth(req, res, next) {
+export function sessionPlayerId(req) {
   const token = sessionToken(req);
   const session = sessions.get(token);
   if (!session || session.expires <= Date.now()) {
     sessions.delete(token);
-    return res.status(401).json({ error: '다시 로그인해주세요.' });
+    return null;
   }
-  req.playerId = session.playerId;
+  return session.playerId;
+}
+
+export function requireAuth(req, res, next) {
+  req.playerId = sessionPlayerId(req);
+  if (!req.playerId) return res.status(401).json({ error: '다시 로그인해주세요.' });
   next();
 }
 

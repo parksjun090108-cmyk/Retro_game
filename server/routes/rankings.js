@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { sessionPlayerId } from '../auth.js';
 
 const router = Router();
 
 // GET /api/rankings/:gameId — 게임별 랭킹
 router.get('/:gameId', async (req, res) => {
   const gameId = parseInt(req.params.gameId);
-  const limit = parseInt(req.query.limit) || 20;
-
-  await db.read();
+  const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 20));
 
   const game = db.data.games.find((g) => g.id === gameId);
   if (!game)
@@ -35,15 +34,14 @@ router.get('/:gameId', async (req, res) => {
       };
     })
     .sort((a, b) => b.best_score - a.best_score)
-    .slice(0, limit)
     .map((r, i) => ({ rank: i + 1, ...r }));
 
-  res.json({ game, rankings });
+  const playerId = sessionPlayerId(req);
+  res.json({ game, rankings: rankings.slice(0, limit), myRanking: rankings.find((r) => r.player_id === playerId) ?? null });
 });
 
 // GET /api/rankings — 전체 게임 목록 + top3
 router.get('/', async (req, res) => {
-  await db.read();
 
   const summary = db.data.games.map((game) => {
     const playerIds = [...new Set(

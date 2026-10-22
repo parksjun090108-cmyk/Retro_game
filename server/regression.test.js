@@ -25,8 +25,7 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
     db.data.players.push({ id: 99, nickname: '기존계정', createdAt: new Date().toISOString() });
     await db.write();
     const legacy = await call('/players/login', 'POST', { nickname: '기존계정' });
-    assert.equal(legacy.status, 200);
-    assert.equal(legacy.body.player.id, 99);
+    assert.equal(legacy.status, 409);
     assert.equal(db.data.players.find((p) => p.id === 99).passwordHash, undefined);
     assert.equal((await call('/players/login', 'POST', { nickname: 123 })).status, 400);
     assert.equal((await call('/players/login', 'POST', { nickname: '   ' })).status, 400);
@@ -39,11 +38,16 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
     const stored = db.data.players.find((p) => p.id === id);
     assert.equal(stored.passwordHash, undefined);
     const returning = await call('/players/login', 'POST', { nickname: ' 테스트 ' });
-    assert.equal(returning.status, 200);
-    assert.equal(returning.body.player.id, id);
-    assert.equal(returning.body.isNew, false);
+    assert.equal(returning.status, 409);
+    assert.equal(db.data.players.filter((p) => p.nickname === '테스트').length, 1);
     assert.equal((await call('/players/me')).status, 401);
     assert.equal((await call('/players/me', 'GET', undefined, login.cookie)).body.player.id, id);
+    const concurrent = await Promise.all([
+      call('/players/login', 'POST', { nickname: '동시등록' }),
+      call('/players/login', 'POST', { nickname: '동시등록' }),
+    ]);
+    assert.deepEqual(concurrent.map((r) => r.status).sort(), [201, 409]);
+    assert.equal(db.data.players.filter((p) => p.nickname === '동시등록').length, 1);
     const record = { player_id: id, game_id: 3, score: 500, result: 'win' };
     assert.equal((await call('/records', 'POST', record)).status, 401);
     assert.equal((await call('/records', 'POST', { ...record, player_id: 99 }, login.cookie)).status, 403);
@@ -52,19 +56,34 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
     assert.equal(saved.status, 201);
     assert.equal(saved.body.record.result, 'win');
     assert.equal((await call('/rankings/3')).body.rankings[0].wins, 1);
+    assert.equal((await call('/rankings/3', 'GET', undefined, login.cookie)).body.myRanking.rank, 1);
+    assert.equal((await call('/rankings/1', 'GET', undefined, login.cookie)).body.myRanking, null);
+    assert.equal((await call('/rankings/3')).body.myRanking, null);
+    // 상위 20명 밖이어도 현재 참가자의 전체 순위를 따로 반환한다.
+    for (let i = 0; i < 21; i++) {
+      db.data.players.push({ id: 200 + i, nickname: `상위${i}` });
+      db.data.records.push({ id: 200 + i, playerId: 200 + i, gameId: 3, score: 1000 + i, result: 'lose' });
+    }
+    await db.write();
+    const outsideTop = await call('/rankings/3', 'GET', undefined, login.cookie);
+    assert.equal(outsideTop.body.rankings.length, 20);
+    assert.equal(outsideTop.body.myRanking.rank, 22);
+    assert.equal(outsideTop.body.myRanking.best_score, 500);
+    assert.ok(!outsideTop.body.rankings.some((row) => row.player_id === id));
+    for (const gameId of [1, 2, 3]) assert.equal((await call(`/rankings/${gameId}`)).status, 200);
     assert.equal((await call(`/players/${id}/records`)).body.player.passwordHash, undefined);
     assert.equal((await call('/players/99/nickname', 'PATCH', { nickname: '탈취' }, login.cookie)).status, 403);
+    assert.equal((await call(`/players/${id}/nickname`, 'PATCH', { nickname: '기존계정' }, login.cookie)).status, 409);
     assert.equal((await call(`/players/${id}/nickname`, 'PATCH', { nickname: '새이름' }, login.cookie)).status, 200);
     await call('/players/logout', 'POST', undefined, login.cookie);
     assert.equal((await call('/players/me', 'GET', undefined, login.cookie)).status, 401);
-    assert.equal((await call('/players/login', 'POST', { nickname: '새이름' })).status, 200);
-    // 이전 버전에서 해시가 저장됐던 플레이어도 행사 모드로 바로 참여한다.
+    assert.equal((await call('/players/login', 'POST', { nickname: '새이름' })).status, 409);
+    // 이전 버전 계정도 중복 이름으로 접속할 수 없다.
     db.data.players.find((p) => p.id === 99).passwordHash = 'legacy-unused-hash';
     await db.write();
     const oldProtected = await call('/players/login', 'POST', { nickname: '기존계정' });
-    assert.equal(oldProtected.status, 200);
-    assert.equal(oldProtected.body.player.passwordHash, undefined);
-    assert.equal(db.data.records.length, 1);
+    assert.equal(oldProtected.status, 409);
+    assert.equal(db.data.records.length, 22);
   } finally {
     await new Promise((resolve) => server.close(resolve));
     await rm(dataDir, { recursive: true, force: true });

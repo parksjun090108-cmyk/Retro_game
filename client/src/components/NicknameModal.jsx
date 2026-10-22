@@ -27,7 +27,7 @@ export default function NicknameModal({
         </h2>
         <p className="modal-desc">
           {isFirst
-            ? '닉네임을 입력하면 바로 시작합니다. 같은 닉네임은 기존 기록을 이어 씁니다.'
+            ? '닉네임을 입력하면 바로 시작합니다. 이미 사용 중인 닉네임은 사용할 수 없습니다.'
             : '새로운 닉네임을 입력하세요.'}
         </p>
 
