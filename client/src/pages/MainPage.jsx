@@ -60,15 +60,12 @@ export default function MainPage() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logoutPlayer();
-      clearPlayer();
-      setError('');
-      setShowNicknameModal(true);
-    } catch (e) {
-      setError(e.message);
-    }
+  const handleLogout = () => {
+    const pending = logoutPlayer();
+    clearPlayer();
+    setError('');
+    setShowNicknameModal(true);
+    pending.catch((e) => console.error('서버 세션 종료 실패:', e));
   };
 
   const handleNicknameChange = async (name) => {
