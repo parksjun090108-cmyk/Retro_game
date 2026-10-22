@@ -1,0 +1,265 @@
+.main-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.main-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 860px;
+}
+
+/* ── 로고 ── */
+.main-header { text-align: center; }
+
+.logo-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--color-gray-light);
+  margin-bottom: 0.6rem;
+}
+
+.logo-title {
+  font-family: var(--font-head);
+  font-size: clamp(2.2rem, 7vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+}
+
+.logo-word-1 { color: var(--color-cyan); text-shadow: var(--glow-cyan); }
+.logo-colon  { color: var(--color-gray-light); }
+.logo-word-2 { color: var(--color-pink); text-shadow: var(--glow-pink); }
+
+.logo-line {
+  margin: 1rem auto 0;
+  width: 55%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
+  opacity: 0.6;
+}
+
+/* ── 플레이어 (우측 상단 고정) ── */
+.player-area-fixed {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+}
+
+.player-area {
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-gray);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+}
+
+.player-label {
+  color: var(--color-gray-light);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  font-family: var(--font-head);
+}
+
+.player-name {
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: var(--font-head);
+  letter-spacing: 0.1em;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--color-gray-light);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: color var(--transition);
+  padding: 0;
+}
+.btn-text:hover { color: var(--color-cyan); }
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid #ff2d7855;
+  color: var(--color-pink);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.7rem;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-logout:hover {
+  background: #ff2d7818;
+  border-color: var(--color-pink);
+}
+
+/* ── 게임 카드 ── */
+.game-menu {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.game-card {
+  width: 200px;
+  padding: 1.8rem 1.2rem 1.4rem;
+  background: #0a0f1e;
+  border: 1px solid var(--color-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-head);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 상단 컬러 라인 */
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  transition: opacity 0.2s;
+}
+.game-card--cyan::before  { background: var(--color-cyan);   box-shadow: var(--glow-cyan); }
+.game-card--yellow::before { background: var(--color-yellow); box-shadow: 0 0 8px #ffd700; }
+.game-card--gray::before  { background: var(--color-gray); }
+
+.game-card.available:hover {
+  transform: translateY(-5px);
+}
+.game-card--cyan.available:hover  {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 20px #00f5ff22, inset 0 0 20px #00f5ff08;
+  background: #0d1424;
+}
+.game-card--yellow.available:hover {
+  border-color: var(--color-yellow);
+  box-shadow: 0 0 20px #ffd70022, inset 0 0 20px #ffd70008;
+  background: #151008;
+}
+
+.game-card.locked {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.game-card-num {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--color-gray-light);
+}
+
+.game-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.game-card--cyan   .game-card-name { color: var(--color-cyan); }
+.game-card--yellow .game-card-name { color: var(--color-yellow); }
+.game-card--gray   .game-card-name { color: var(--color-gray-light); }
+
+.game-card-desc {
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  color: var(--color-gray-light);
+}
+
+.game-card-status {
+  margin-top: 0.5rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+}
+.game-card--cyan.available   .game-card-status { color: var(--color-cyan); }
+.game-card--yellow.available .game-card-status { color: var(--color-yellow); }
+.game-card.locked             .game-card-status { color: var(--color-gray); }
+
+/* ── 하단 버튼 ── */
+.bottom-menu { display: flex; gap: 1rem; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--color-gray);
+  color: var(--color-gray-light);
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  padding: 0.6rem 2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.btn-ghost:hover {
+  border-color: var(--color-cyan);
+  color: var(--color-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+/* ── BGM 버튼 ── */
+.bgm-btn {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.5rem;
+  z-index: 10;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-gray);
+  border-radius: 50%;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.bgm-btn:hover {
+  border-color: var(--color-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+/* 게임 카드 핑크 */
+.game-card--pink::before { background: var(--color-pink); box-shadow: var(--glow-pink); }
+.game-card--pink .game-card-name { color: var(--color-pink); }
+.game-card--pink.available .game-card-status { color: var(--color-pink); }
+.game-card--pink.available:hover {
+  border-color: var(--color-pink);
+  box-shadow: 0 0 20px #ff2d7822, inset 0 0 20px #ff2d7808;
+  background: #140810;
+}

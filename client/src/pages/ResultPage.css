@@ -1,0 +1,89 @@
+.result-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--color-bg);
+}
+
+.result-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.result-verdict {
+  font-family: var(--font-head);
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  animation: fadeIn 0.6s ease;
+}
+
+.final-score-board {
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-gray);
+  border-radius: 8px;
+  padding: 2rem 4rem;
+  text-align: center;
+}
+
+.score-side { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+
+.score-label {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+}
+
+.score-main-label {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  color: var(--color-gray-light);
+}
+
+.score-num {
+  font-family: var(--font-head);
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.new-record-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid var(--color-yellow);
+  border-radius: 4px;
+  color: var(--color-yellow);
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  animation: recordFlash 1s ease-in-out infinite;
+}
+
+@keyframes recordFlash {
+  0%, 100% { box-shadow: 0 0 12px #ffd70055; }
+  50%       { box-shadow: 0 0 28px #ffd700aa; }
+}
+
+.badge-icon { font-size: 1.2rem; }
+
+.my-stats {
+  display: flex;
+  gap: 2.5rem;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-gray);
+  border-radius: 6px;
+  padding: 1rem 2.5rem;
+}
+
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+.stat-label { font-size: 0.65rem; color: var(--color-gray-light); letter-spacing: 0.2em; }
+.stat-val { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; }
+
+.result-nav { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }

@@ -1,0 +1,7 @@
+.game-intro-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: block;
+  cursor: none;
+}

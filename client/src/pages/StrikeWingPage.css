@@ -1,0 +1,80 @@
+.sw-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg);
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+
+/* ── 상단바 ── */
+.sw-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 900px;
+  padding: 0.5rem 1rem;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-gray);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.sw-back { font-size: 0.75rem; padding: 0.4rem 1rem; }
+
+.sw-topbar-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.sw-topbar-hint {
+  font-size: 0.68rem;
+  color: var(--color-gray-light);
+  letter-spacing: 0.06em;
+}
+
+/* ── iframe 래퍼 ── */
+.sw-frame-wrap {
+  width: 100%;
+  max-width: 900px;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--color-gray);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 30px #ffd70015;
+}
+
+.sw-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.neon-yellow {
+  color: var(--color-yellow);
+  text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70055;
+}
+
+/* 팩맨: 별도 페이지 사용 */
+.mp-frame-wrap {
+  aspect-ratio: unset !important;
+  width: 100%;
+  max-width: 640px;
+  flex: 1;
+  min-height: 0;
+}
+.mp-frame-wrap .sw-frame { width: 100%; height: 100%; }
+
+/* 팩맨 페이지 */
+.mp-page {
+  overflow: hidden;
+  height: 100vh;
+}

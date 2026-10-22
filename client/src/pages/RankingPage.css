@@ -1,0 +1,162 @@
+.ranking-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 1rem 4rem;
+  background: var(--color-bg);
+}
+
+.ranking-content {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 헤더 */
+.ranking-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--color-gray-light);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.ranking-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-align: center;
+  color: var(--color-white);
+}
+
+.logo-line {
+  margin: 0.8rem auto 0;
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
+  opacity: 0.5;
+}
+
+/* 탭 */
+.ranking-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.ranking-tab {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--color-gray-light);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -1px;
+}
+
+.ranking-tab--cyan.active   { color: var(--color-cyan);   border-bottom-color: var(--color-cyan); }
+.ranking-tab--yellow.active { color: var(--color-yellow); border-bottom-color: var(--color-yellow); }
+.ranking-tab--pink.active   { color: var(--color-pink);   border-bottom-color: var(--color-pink); }
+.ranking-tab:hover:not(.active) { color: var(--color-white); }
+
+/* 테이블 */
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  table-layout: fixed;
+}
+
+.ranking-table thead tr {
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.ranking-table th {
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  color: var(--color-gray-light);
+  font-weight: 400;
+}
+
+.th-rank  { width: 12%; text-align: center; }
+.th-nick  { width: 60%; text-align: left; }
+.th-score { width: 28%; text-align: right; }
+
+.ranking-table td {
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid #151c2e;
+  font-size: 0.88rem;
+  transition: background 0.15s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-table tbody tr:hover td { background: #0d1220; }
+
+.my-row.tab-cyan   td { background: #00f5ff08 !important; }
+.my-row.tab-yellow td { background: #ffd70008 !important; }
+.my-row.tab-pink   td { background: #ff2d7808 !important; }
+
+.rank-col  { width: 12%; text-align: center; }
+.nick-col  { width: 60%; text-align: left; }
+.score-col { width: 28%; text-align: right; font-family: var(--font-head); font-weight: 700; font-size: 1.05rem; }
+.score-unit { font-size: 0.6rem; margin-left: 3px; opacity: 0.6; font-family: var(--font-mono); }
+
+/* 색상 유틸 */
+.neon-cyan   { color: var(--color-cyan);   text-shadow: var(--glow-cyan); }
+.neon-yellow { color: var(--color-yellow); text-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70055; }
+.neon-pink   { color: var(--color-pink);   text-shadow: var(--glow-pink); }
+
+.medal   { font-size: 1.2rem; }
+.rank-num { color: var(--color-gray-light); font-size: 0.85rem; }
+
+.you-badge {
+  font-size: 0.6rem;
+  margin-left: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.empty-row {
+  text-align: center;
+  color: var(--color-gray-light);
+  padding: 2.5rem !important;
+  font-size: 0.85rem;
+}
+
+.loading-text, .error-text {
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+/* 하단 버튼 */
+.ranking-nav {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-yellow {
+  color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+.btn-yellow:hover {
+  background: #ffd70015;
+  box-shadow: 0 0 8px #ffd700, 0 0 20px #ffd70055;
+}
