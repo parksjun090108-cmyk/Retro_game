@@ -1,16 +1,14 @@
 import { Router } from 'express';
 import db from '../db.js';
-import { hashPassword, verifyPassword, createSession, endSession, requireAuth, publicPlayer } from '../auth.js';
+import { createSession, endSession, requireAuth, publicPlayer } from '../auth.js';
 
 const router = Router();
 
-// 기존 계정은 비밀번호 확인, 새 닉네임은 비밀번호와 함께 등록한다.
+// 행사 모드: 같은 닉네임으로 다시 참여하면 기존 기록을 이어 쓴다.
 router.post('/login', async (req, res) => {
-  const { nickname, password } = req.body;
+  const { nickname } = req.body;
   if (typeof nickname !== 'string' || !nickname.trim() || nickname.trim().length > 12)
     return res.status(400).json({ error: '닉네임은 1~12자로 입력해주세요.' });
-  if (typeof password !== 'string' || password.length < 8 || password.length > 128)
-    return res.status(400).json({ error: '비밀번호는 8~128자로 입력해주세요.' });
 
   const name = nickname.trim();
   await db.read();
@@ -18,10 +16,6 @@ router.post('/login', async (req, res) => {
   const existing = db.data.players.find((p) => p.nickname === name);
 
   if (existing) {
-    if (!existing.passwordHash)
-      return res.status(403).json({ error: '기존 계정입니다. 관리자에게 비밀번호 지정을 요청해주세요.' });
-    if (!verifyPassword(password, existing.passwordHash))
-      return res.status(401).json({ error: '닉네임 또는 비밀번호가 올바르지 않습니다.' });
     createSession(req, res, existing.id);
     return res.json({ player: publicPlayer(existing), isNew: false });
   }
@@ -29,7 +23,6 @@ router.post('/login', async (req, res) => {
   const newPlayer = {
     id: db.data._nextPlayerId++,
     nickname: name,
-    passwordHash: hashPassword(password),
     createdAt: new Date().toISOString(),
   };
   db.data.players.push(newPlayer);

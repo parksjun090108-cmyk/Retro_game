@@ -49,9 +49,9 @@ export default function MainPage() {
   const [introTarget, setIntroTarget]   = useState('/game');
   const [error, setError] = useState('');
 
-  const handleNicknameSubmit = async (name, password) => {
+  const handleNicknameSubmit = async (name) => {
     try {
-      const { player } = await loginPlayer(name, password);
+      const { player } = await loginPlayer(name);
       setPlayer(player);
       setShowNicknameModal(false);
       setError('');
@@ -114,7 +114,7 @@ export default function MainPage() {
             </div>
           ) : (
             <button className="btn btn-cyan" onClick={() => setShowNicknameModal(true)}>
-              로그인 / 등록
+              닉네임 입력
             </button>
           )}
         </div>

@@ -12,7 +12,7 @@ async function request(method, path, body) {
 }
 
 // ── 플레이어 ──────────────────────────────
-export const loginPlayer = (nickname, password) => request('POST', '/players/login', { nickname, password });
+export const loginPlayer = (nickname) => request('POST', '/players/login', { nickname });
 export const logoutPlayer = () => request('POST', '/players/logout');
 export const getCurrentPlayer = () => request('GET', '/players/me');
 export const changeNickname = (id, nickname)     => request('PATCH', `/players/${id}/nickname`,  { nickname });

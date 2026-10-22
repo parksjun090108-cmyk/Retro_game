@@ -24,19 +24,24 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
   try {
     db.data.players.push({ id: 99, nickname: '기존계정', createdAt: new Date().toISOString() });
     await db.write();
-    assert.equal((await call('/players/login', 'POST', { nickname: '기존계정', password: 'password123' })).status, 403);
+    const legacy = await call('/players/login', 'POST', { nickname: '기존계정' });
+    assert.equal(legacy.status, 200);
+    assert.equal(legacy.body.player.id, 99);
     assert.equal(db.data.players.find((p) => p.id === 99).passwordHash, undefined);
-    assert.equal((await call('/players/login', 'POST', { nickname: 123, password: 'password123' })).status, 400);
-    assert.equal((await call('/players/login', 'POST', { nickname: '테스트', password: 'short' })).status, 400);
-    const login = await call('/players/login', 'POST', { nickname: '테스트', password: 'password123' });
+    assert.equal((await call('/players/login', 'POST', { nickname: 123 })).status, 400);
+    assert.equal((await call('/players/login', 'POST', { nickname: '   ' })).status, 400);
+    assert.equal((await call('/players/login', 'POST', { nickname: '가'.repeat(13) })).status, 400);
+    const login = await call('/players/login', 'POST', { nickname: '테스트' });
     assert.equal(login.status, 201);
     assert.ok(login.cookie);
     assert.equal(login.body.player.passwordHash, undefined);
     const id = login.body.player.id;
     const stored = db.data.players.find((p) => p.id === id);
-    assert.ok(stored.passwordHash && !stored.passwordHash.includes('password123'));
-    assert.equal((await call('/players/login', 'POST', { nickname: '테스트' })).status, 400);
-    assert.equal((await call('/players/login', 'POST', { nickname: '테스트', password: 'incorrect123' })).status, 401);
+    assert.equal(stored.passwordHash, undefined);
+    const returning = await call('/players/login', 'POST', { nickname: ' 테스트 ' });
+    assert.equal(returning.status, 200);
+    assert.equal(returning.body.player.id, id);
+    assert.equal(returning.body.isNew, false);
     assert.equal((await call('/players/me')).status, 401);
     assert.equal((await call('/players/me', 'GET', undefined, login.cookie)).body.player.id, id);
     const record = { player_id: id, game_id: 3, score: 500, result: 'win' };
@@ -52,11 +57,14 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
     assert.equal((await call(`/players/${id}/nickname`, 'PATCH', { nickname: '새이름' }, login.cookie)).status, 200);
     await call('/players/logout', 'POST', undefined, login.cookie);
     assert.equal((await call('/players/me', 'GET', undefined, login.cookie)).status, 401);
-    assert.equal((await call('/players/login', 'POST', { nickname: '새이름', password: 'password123' })).status, 200);
-    const { hashPassword } = await import('./auth.js');
-    db.data.players.find((p) => p.id === 99).passwordHash = hashPassword('admin-set123');
+    assert.equal((await call('/players/login', 'POST', { nickname: '새이름' })).status, 200);
+    // 이전 버전에서 해시가 저장됐던 플레이어도 행사 모드로 바로 참여한다.
+    db.data.players.find((p) => p.id === 99).passwordHash = 'legacy-unused-hash';
     await db.write();
-    assert.equal((await call('/players/login', 'POST', { nickname: '기존계정', password: 'admin-set123' })).status, 200);
+    const oldProtected = await call('/players/login', 'POST', { nickname: '기존계정' });
+    assert.equal(oldProtected.status, 200);
+    assert.equal(oldProtected.body.player.passwordHash, undefined);
+    assert.equal(db.data.records.length, 1);
   } finally {
     await new Promise((resolve) => server.close(resolve));
     await rm(dataDir, { recursive: true, force: true });
