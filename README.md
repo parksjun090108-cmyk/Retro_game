@@ -40,7 +40,9 @@ npm test --prefix server
 
 ### 외부 공개 랭킹
 
-공개 전용 주소: https://retro-games-rankings.wigglybirch512.chatgpt.site
+공개 전용 주소: https://parksjun090108-cmyk.github.io/Retro_game/
+
+`docs/`의 정적 화면을 GitHub Pages로 공개합니다. 기록 보관·전송 API는 기존 Sites 백엔드를 사용하며, 해당 읽기 API는 위 GitHub Pages 출처의 접근을 허용합니다.
 
 공개 화면에는 로그인·본인 표시 없이 세 종목 상위 20명만 표시합니다. 게임 서버 실행 시 10초마다 닉네임·종목별 최고 점수를 전송합니다. PC가 꺼져도 마지막 공개 기록은 남습니다. 재연결되면 자동으로 갱신합니다.
 연결 설정은 로컬 `server/data/rankings-sync.json`에 저장되며 Git에 포함하지 않습니다. 다른 PC에서 실행하려면 이 설정 파일도 별도로 안전하게 복사해야 합니다.
