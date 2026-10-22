@@ -6,6 +6,10 @@ React + Vite 기반 레트로 아케이드 플랫폼입니다. PING PONG, STRIKE
 
 Node.js 20 이상에서 프로젝트 루트에서 실행합니다.
 
+Windows에서는 프로젝트 폴더의 **`start-dev.cmd`를 더블클릭**하면 서버와 프론트엔드를 한 번에 실행합니다. 필요한 패키지가 없으면 자동 설치하므로 첫 실행에는 인터넷 연결이 필요합니다. 열린 실행 창에서 `Ctrl+C`로 둘 다 종료합니다.
+
+터미널에서는 최초 설치 후 **`npm run dev` 하나만** 실행하면 됩니다.
+
 ```powershell
 npm install
 npm run install:all
@@ -13,6 +17,7 @@ npm run dev
 ```
 
 브라우저에서 http://localhost:5173 을 엽니다. Express 서버는 3001 포트를 사용하며, Vite가 API와 두 HTML 게임을 프록시합니다.
+다른 프로그램이 3001 또는 5173 포트를 사용 중이면 오류를 표시하고 실행을 중단합니다.
 
 ```powershell
 npm run build --prefix client
