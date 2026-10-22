@@ -84,6 +84,12 @@ test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
     const oldProtected = await call('/players/login', 'POST', { nickname: '기존계정' });
     assert.equal(oldProtected.status, 409);
     assert.equal(db.data.records.length, 22);
+    const { publicSnapshot, syncPublicRankings } = await import('./public-rankings.js');
+    const publicData = publicSnapshot();
+    assert.equal(publicData.games.length, 3);
+    assert.equal(publicData.games[2].rankings.length, 20);
+    assert.deepEqual(Object.keys(publicData.games[2].rankings[0]).sort(), ['best_score', 'nickname']);
+    assert.equal(await syncPublicRankings({}), false);
   } finally {
     await new Promise((resolve) => server.close(resolve));
     await rm(dataDir, { recursive: true, force: true });
