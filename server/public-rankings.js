@@ -1,9 +1,8 @@
-import { readFileSync } from 'node:fs';
 import db from './db.js';
+import { cloudConfiguration } from './cloud-proxy.js';
 
 function configuration() {
-  try { return JSON.parse(readFileSync(new URL('./data/rankings-sync.json', import.meta.url), 'utf8')); }
-  catch { return null; }
+  return cloudConfiguration();
 }
 
 export function publicSnapshot() {
@@ -20,6 +19,7 @@ export function publicSnapshot() {
 }
 
 export async function syncPublicRankings(config = configuration()) {
+  if (config?.cloudApiUrl) return false;
   if (!config?.url || !config?.token) return false;
   const response = await fetch(new URL('/api/sync', config.url), {
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.token}` },
@@ -31,7 +31,7 @@ export async function syncPublicRankings(config = configuration()) {
 
 export function startPublicRankingsSync() {
   const config = configuration();
-  if (!config) return;
+  if (!config || config.cloudApiUrl) return;
   let busy = false;
   let failed = false;
   const update = async () => {

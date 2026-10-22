@@ -804,7 +804,7 @@
       els.result.classList.add("active");
       try {
         var pid=Number(localStorage.getItem("pingpong-player-id"));
-        if(pid&&game.score>0){fetch("/api/records",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player_id:pid,game_id:3,score:game.score,result:win?"win":"lose"})}).catch(function(){});}
+        if(pid&&game.score>0){fetch("/api/records",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+(localStorage.getItem("retro-api-token:/api")||"")},body:JSON.stringify({player_id:pid,game_id:3,score:game.score,result:win?"win":"lose"})}).catch(function(){});}
       } catch(e) {}
       game.best = Math.max(game.best, game.score);
       writeBestScore(game.best);

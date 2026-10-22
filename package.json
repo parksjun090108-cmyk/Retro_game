@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "PING PONG : REBOOT — 레트로 아케이드 게임 플랫폼",
   "scripts": {
+    "build:public": "node scripts/build-public.mjs",
     "install:all": "npm install --prefix client && npm install --prefix server",
     "dev": "concurrently --kill-others-on-fail -n SERVER,CLIENT -c cyan,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "start": "concurrently --kill-others-on-fail -n SERVER,CLIENT -c cyan,magenta \"npm run start --prefix server\" \"npm run dev --prefix client\""

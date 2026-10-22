@@ -1,13 +1,17 @@
-const BASE = '/api';
+const BASE = import.meta.env.VITE_API_URL || '/api';
+const TOKEN_KEY = `retro-api-token:${BASE}`;
 
 async function request(method, path, body) {
+  const token = localStorage.getItem(TOKEN_KEY);
   const res = await fetch(`${BASE}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || '요청 실패');
+  if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
+  if (path === '/players/logout') localStorage.removeItem(TOKEN_KEY);
   return data;
 }
 

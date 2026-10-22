@@ -1,0 +1,16 @@
+STRIKE WING — by A.L
+
+[라이브러리]
+- three.js r160 (lib/three.min.js) — MIT License, lib/LICENSE-three.txt
+
+[글꼴] 모두 SIL Open Font License 1.1 (fonts/OFL-*.txt)
+- Gothic A1 (400, 700, 800)
+- Oxanium (500, 700, 800)
+- Share Tech Mono (400)
+
+[소리] Pixabay Content License (https://pixabay.com/service/license-summary/)
+- 배경 음악: "Fight Action - Epic Taiko Sport Loop" — Sonican
+- 가까운 폭발: "Medium Explosion" — freesound_community
+- 먼 폭발: "Distant Bang" — DRAGON-STUDIO
+  * 소리는 index.html 안에도 들어 있음. sounds 폴더는 편집용 원본(앞뒤 빈 소리 자르고 용량 줄인 것)
+  * Pixabay 라이선스상 mp3만 따로 떼어 팔거나 배포하면 안 됨

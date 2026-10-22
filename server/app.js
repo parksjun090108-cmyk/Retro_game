@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import playersRouter from './routes/players.js';
 import recordsRouter from './routes/records.js';
 import rankingsRouter from './routes/rankings.js';
+import { cloudProxy } from './cloud-proxy.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -12,6 +13,7 @@ const app = express();
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
+app.use('/api', cloudProxy);
 
 // Strike Wing 정적 파일 서빙
 app.use('/strike-wing', express.static(

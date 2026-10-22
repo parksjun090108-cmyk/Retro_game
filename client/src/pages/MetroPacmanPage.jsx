@@ -20,7 +20,7 @@ export default function MetroPacmanPage() {
       </div>
       <iframe
         className="mp-frame"
-        src="/metro-pacman/index.html"
+        src={`${import.meta.env.BASE_URL}metro-pacman/index.html`}
         title="METRO PACMAN"
         allowFullScreen
       />

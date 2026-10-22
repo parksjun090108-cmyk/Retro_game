@@ -30,7 +30,7 @@ function startAudio(key, tracks, volume) {
   killAudio(key);
   const s     = getStore(key);
   const track = tracks[Math.floor(Math.random() * tracks.length)];
-  const audio = new Audio(track.src);
+  const audio = new Audio(`${import.meta.env.BASE_URL}${track.src.replace(/^\//, '')}`);
   audio.loop   = false;
   audio.volume = 0;
   s.audio = audio;

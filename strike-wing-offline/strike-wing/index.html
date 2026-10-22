@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
@@ -761,7 +761,7 @@ function gameOver(){S.mode='over';S.mt=0;AU.seek(0);try{localStorage.setItem('st
   try{
     const pid=Number(localStorage.getItem('pingpong-player-id'));
     if(pid&&S.score>0){
-      fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},
+      fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+(localStorage.getItem('retro-api-token:/api')||'')},
         body:JSON.stringify({player_id:pid,game_id:2,score:S.score,result:'lose'})})
       .catch(()=>{});
     }

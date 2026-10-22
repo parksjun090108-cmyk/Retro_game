@@ -27,7 +27,7 @@ export default function StrikeWingPage() {
       <div className="sw-frame-wrap">
         <iframe
           className="sw-frame"
-          src="/strike-wing/index.html"
+          src={`${import.meta.env.BASE_URL}strike-wing/index.html`}
           title="STRIKE WING"
           allowFullScreen
         />
