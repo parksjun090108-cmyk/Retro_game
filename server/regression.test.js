@@ -5,6 +5,37 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import vm from 'node:vm';
 
+test('로그아웃은 즉시 토큰 제거, 빈 JSON 전송, 늦은 응답에도 새 참가자 유지', async () => {
+  const source = (await readFile(new URL('../client/src/api/index.js', import.meta.url), 'utf8'))
+    .replace('import.meta.env.VITE_API_URL', 'undefined').replace(/^export /gm, '');
+  const values = new Map([['retro-api-token:/api', 'old-token']]);
+  let finishLogout;
+  let logoutOptions;
+  const context = {
+    localStorage: { getItem: (key) => values.get(key), setItem: (key, value) => values.set(key, value), removeItem: (key) => values.delete(key) },
+    fetch: (url, options) => {
+      if (url.endsWith('/logout')) {
+        logoutOptions = options;
+        return new Promise((resolve) => { finishLogout = resolve; });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ player: { id: 2 }, token: 'new-token' }) });
+    },
+  };
+  vm.createContext(context);
+  vm.runInContext(source + '\nglobalThis.api = { logoutPlayer, loginPlayer };', context);
+  const pending = context.api.logoutPlayer();
+  assert.equal(values.has('retro-api-token:/api'), false);
+  assert.equal(logoutOptions.headers.Authorization, 'Bearer old-token');
+  assert.equal(logoutOptions.body, '{}');
+  await context.api.loginPlayer('다음참가자');
+  finishLogout({ ok: true, json: async () => ({ ok: true }) });
+  await pending;
+  assert.equal(values.get('retro-api-token:/api'), 'new-token');
+  context.fetch = async () => { throw new Error('offline'); };
+  await assert.rejects(context.api.logoutPlayer(), /offline/);
+  assert.equal(values.has('retro-api-token:/api'), false);
+});
+
 test('로그인·권한·기록 회귀 검사 (격리된 DB)', async () => {
   const dataDir = await mkdtemp(join(tmpdir(), 'retro-test-'));
   process.env.RETRO_DATA_DIR = dataDir;
